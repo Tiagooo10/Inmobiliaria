@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import FormContrato from "../components/FormContrato";
 import axios from "axios";
 
-const DIRECTUS_URL = "http://localhost:8055";
-const TOKEN = "e01OvqhD8_V1vxDE8LIxk0HY6sAGebij"; // tu token
+export const DIRECTUS_URL = "https://directus-1-6hgt.onrender.com";
+
+export const TOKEN = "PgwLK2y9i0WzS1CgcUeoMV-YL91pxchz";
 
 export default function Buscar() {
   const [contratos, setContratos] = useState([]);

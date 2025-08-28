@@ -52,9 +52,11 @@ export default function FormContrato({ onCancel, initialData }) {
 
       const data = await res.json();
 
-      if (data.errors) {
-        console.error(data.errors);
-        alert("❌ Error al guardar el contrato");
+      // Mostramos todo el contenido de la respuesta para ver errores
+      console.log("Respuesta Directus:", data);
+
+      if (res.status !== 200 && res.status !== 201) {
+        alert(`❌ Error al guardar el contrato: ${JSON.stringify(data)}`);
         return;
       }
 
@@ -79,7 +81,7 @@ export default function FormContrato({ onCancel, initialData }) {
       if (onCancel) onCancel();
     } catch (err) {
       console.error(err);
-      alert("❌ Error al guardar el contrato");
+      alert("❌ Error al guardar el contrato (excepción)");
     }
   };
 
@@ -87,7 +89,6 @@ export default function FormContrato({ onCancel, initialData }) {
     <form
       onSubmit={handleSubmit}
       className="max-w-5xl mx-auto bg-gray-100 rounded-3xl shadow-lg p-8 pt-12 space-y-10"
-
     >
       <h2 className="text-3xl font-bold text-gray-800 text-center">
         {initialData ? "Editar Contrato" : "Cargar Contrato"}

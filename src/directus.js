@@ -1,2 +1,3 @@
-export const DIRECTUS_URL = "http://localhost:8055";
-export const TOKEN = "e01OvqhD8_V1vxDE8LIxk0HY6sAGebij";
+export const DIRECTUS_URL = "https://directus-1-6hgt.onrender.com";
+
+export const TOKEN = "PgwLK2y9i0WzS1CgcUeoMV-YL91pxchz";
