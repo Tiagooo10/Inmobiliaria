@@ -119,6 +119,8 @@ export default function Buscar({ currentUser }) {
         Contratos Guardados
       </h2>
 
+      <p>Contratos guardados: {contratos.length}</p>
+
       <div className="flex justify-between items-center mb-4">
         <input
           type="text"
@@ -130,7 +132,7 @@ export default function Buscar({ currentUser }) {
 
         <button
           onClick={() => setOrdenarPorVencimiento(!ordenarPorVencimiento)}
-          className="ml-2 bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-800"
+          className="ml-2 bg-gray-700 text-white px-2 py-0.2 rounded-lg hover:bg-gray-800"
         >
           {ordenarPorVencimiento
             ? "🔽 Quitar orden"
@@ -174,13 +176,13 @@ export default function Buscar({ currentUser }) {
             <div className="flex space-x-2 mt-2">
               <button
                 onClick={() => borrarContrato(c.id)}
-                className="bg-red-600 text-white py-1 px-3 text-sm rounded-lg hover:bg-blue-700"
+                className="bg-red-600 text-white py-1 px-3 text-sm rounded-lg hover:"
               >
                 Eliminar
               </button>
               <button
                 onClick={() => setEditando(c.id)}
-                className="bg-blue-600 text-white py-1 px-3 text-sm rounded-lg hover:bg-green-700"
+                className="bg-blue-600 text-white py-1 px-3 text-sm rounded-lg "
               >
                 Editar
               </button>

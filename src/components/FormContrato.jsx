@@ -110,7 +110,7 @@ export default function FormContrato({ onCancel, initialData, currentUser }) {
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm text-gray-600">Nombre</label>
+            <label className="block text-sm text-gray-800">Nombre</label>
             <input
               type="text"
               name="inquilinoNombre"
@@ -120,7 +120,7 @@ export default function FormContrato({ onCancel, initialData, currentUser }) {
             />
           </div>
           <div>
-            <label className="block text-sm text-gray-600">Apellido</label>
+            <label className="block text-sm text-gray-800">Apellido</label>
             <input
               type="text"
               name="inquilinoApellido"
@@ -130,7 +130,7 @@ export default function FormContrato({ onCancel, initialData, currentUser }) {
             />
           </div>
           <div>
-            <label className="block text-sm text-gray-600">DNI / CUIT</label>
+            <label className="block text-sm text-gray-800">DNI / CUIT</label>
             <input
               type="text"
               name="inquilinoDni"
@@ -140,7 +140,7 @@ export default function FormContrato({ onCancel, initialData, currentUser }) {
             />
           </div>
           <div>
-            <label className="block text-sm text-gray-600">Dirección</label>
+            <label className="block text-sm text-gray-800">Dirección</label>
             <input
               type="text"
               name="inquilinoDireccion"
@@ -159,7 +159,7 @@ export default function FormContrato({ onCancel, initialData, currentUser }) {
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
-            <label className="block text-sm text-gray-600">Nombre</label>
+            <label className="block text-sm text-gray-800">Nombre</label>
             <input
               type="text"
               name="propietarioNombre"
@@ -169,7 +169,7 @@ export default function FormContrato({ onCancel, initialData, currentUser }) {
             />
           </div>
           <div>
-            <label className="block text-sm text-gray-600">Apellido</label>
+            <label className="block text-sm text-gray-800">Apellido</label>
             <input
               type="text"
               name="propietarioApellido"
@@ -179,7 +179,7 @@ export default function FormContrato({ onCancel, initialData, currentUser }) {
             />
           </div>
           <div>
-            <label className="block text-sm text-gray-600">DNI / CUIT</label>
+            <label className="block text-sm text-gray-800">DNI / CUIT</label>
             <input
               type="text"
               name="propietarioDni"
@@ -189,7 +189,7 @@ export default function FormContrato({ onCancel, initialData, currentUser }) {
             />
           </div>
           <div>
-            <label className="block text-sm text-gray-600">Dirección</label>
+            <label className="block text-sm text-gray-800">Dirección</label>
             <input
               type="text"
               name="propietarioDireccion"
@@ -203,7 +203,7 @@ export default function FormContrato({ onCancel, initialData, currentUser }) {
 
       {/* Contrato */}
       <div className="bg-white rounded-xl shadow-md p-6 space-y-4">
-        <h3 className="text-xl font-semibold text-indigo-600 border-b pb-2">
+        <h3 className="text-xl font-semibold text-indigo-800 border-b pb-2">
           Datos del Contrato
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

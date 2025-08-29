@@ -102,7 +102,15 @@ export default function App() {
             }
           />
           <Route path="/" element={<FormRegister />} />
-          <Route path="/login" element={<FormLogin setCurrentUser={handleLogin} />} />
+          <Route
+            path="/login"
+            element={
+              <FormLogin
+                currentUser={currentUser} // 🔹 PASAMOS EL CURRENTUSER
+                setCurrentUser={handleLogin}
+              />
+            }
+          />
           <Route
             path="/perfil"
             element={
