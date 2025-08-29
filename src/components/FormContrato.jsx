@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { DIRECTUS_URL, TOKEN } from "../directus";
+import { DIRECTUS_URL } from "../directus";
 
-export default function FormContrato({ onCancel, initialData }) {
+export default function FormContrato({ onCancel, initialData, currentUser }) {
   const [formData, setFormData] = useState({
     inquilinoNombre: "",
     inquilinoApellido: "",
@@ -35,24 +35,33 @@ export default function FormContrato({ onCancel, initialData }) {
       return;
     }
 
+    if (!currentUser) {
+      alert("❌ Debés iniciar sesión antes de guardar un contrato.");
+      return;
+    }
+
     try {
       const url = initialData?.id
         ? `${DIRECTUS_URL}/items/Contratos/${initialData.id}`
         : `${DIRECTUS_URL}/items/Contratos`;
       const method = initialData?.id ? "PATCH" : "POST";
 
+      // Asociamos el contrato al usuario logueado
+      const payload = {
+        ...formData,
+        usuario_id: currentUser.id,
+      };
+
       const res = await fetch(url, {
         method,
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${TOKEN}`,
+          Authorization: `Bearer ${currentUser.token}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
-
-      // Mostramos todo el contenido de la respuesta para ver errores
       console.log("Respuesta Directus:", data);
 
       if (res.status !== 200 && res.status !== 201) {
@@ -285,6 +294,9 @@ export default function FormContrato({ onCancel, initialData }) {
     </form>
   );
 }
+
+
+
 
 
 

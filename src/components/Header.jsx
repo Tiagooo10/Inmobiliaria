@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export const Header = () => {
+export const Header = ({ isLoggedIn, currentUser }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -33,60 +33,47 @@ export const Header = () => {
               viewBox="0 0 24 24"
             >
               {menuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18L18 6M6 6l12 12"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
               )}
             </svg>
           </button>
         </div>
 
         {/* Menú escritorio */}
-        <div className="hidden lg:flex lg:gap-x-12">
-          <a href="/" className="text-sm font-semibold text-white hover:text-indigo-400">
-            Inicio
-          </a>
-          <a href="/contrato" className="text-sm font-semibold text-white hover:text-indigo-400">
-            Ingresar
-          </a>
-          <a href="/buscar" className="text-sm font-semibold text-white hover:text-indigo-400">
-            Ver contratos
-          </a>
-        </div>
+        {isLoggedIn ? (
+          <div className="hidden lg:flex lg:gap-x-12">
+            <a href="/inicio" className="text-sm font-semibold text-white hover:text-indigo-400">Inicio</a>
+            <a href="/contrato" className="text-sm font-semibold text-white hover:text-indigo-400">Ingresar</a>
+            <a href="/buscar" className="text-sm font-semibold text-white hover:text-indigo-400">Ver contratos</a>
+            <a href="/perfil" className="text-sm font-semibold text-white hover:text-indigo-400">👤 {currentUser?.email}</a>
+          </div>
+        ) : (
+          <div className="hidden lg:flex lg:gap-x-12">
+            <a href="/login" className="text-sm font-semibold text-white hover:text-indigo-400">Log in →</a>
+          </div>
+        )}
 
-        {/* Login */}
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a href="/login" className="text-sm font-semibold text-white hover:text-indigo-400">
-            Log in →
-          </a>
-        </div>
+        {/* Menú mobile */}
+        {menuOpen && (
+          <div className="lg:hidden bg-gray-900 px-6 pb-6">
+            {isLoggedIn ? (
+              <>
+                <a href="/inicio" className="block py-2 text-base font-semibold text-white hover:text-indigo-400">Inicio</a>
+                <a href="/contrato" className="block py-2 text-base font-semibold text-white hover:text-indigo-400">Ingresar</a>
+                <a href="/buscar" className="block py-2 text-base font-semibold text-white hover:text-indigo-400">Ver contratos</a>
+                <a href="/perfil" className="block py-2 text-base font-semibold text-white hover:text-indigo-400">👤 {currentUser?.email}</a>
+              </>
+            ) : (
+              <a href="/login" className="block py-2 text-base font-semibold text-white hover:text-indigo-400">Log in</a>
+            )}
+          </div>
+        )}
       </nav>
-
-      {/* Menú mobile desplegable */}
-      {menuOpen && (
-        <div className="lg:hidden bg-gray-900 px-6 pb-6">
-          <a href="/" className="block py-2 text-base font-semibold text-white hover:text-indigo-400">
-            Inicio
-          </a>
-          <a href="/contrato" className="block py-2 text-base font-semibold text-white hover:text-indigo-400">
-            Ingresar
-          </a>
-          <a href="/buscar" className="block py-2 text-base font-semibold text-white hover:text-indigo-400">
-            Ver contratos
-          </a>
-          <a href="/login" className="block py-2 text-base font-semibold text-white hover:text-indigo-400">
-            Log in
-          </a>
-        </div>
-      )}
     </header>
   );
 };
+
+
+

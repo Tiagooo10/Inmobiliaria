@@ -5,6 +5,7 @@ import { faMagnifyingGlass, faFileContract } from "@fortawesome/free-solid-svg-i
 export default function CardsPrincipales() {
   return (
     <div className="relative isolate bg-gray-900 min-h-screen px-6 pt-14 lg:px-8">
+      
 
       {/* Fondo superior e inferior */}
       <div aria-hidden="true" className="absolute inset-0 -z-10 transform-gpu overflow-hidden blur-3xl">
