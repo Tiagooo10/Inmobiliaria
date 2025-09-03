@@ -3,3 +3,7 @@
 main {
   background-color: #1f2937; /* gris oscuro, igual que bg-gray-900 */
 }
+
+html {
+  scroll-padding-top: 120px; /* altura del header fijo */
+}

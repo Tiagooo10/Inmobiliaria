@@ -3,6 +3,9 @@ import { useState } from "react";
 export const Header = ({ isLoggedIn, currentUser }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Si no está logueado, no mostramos nada
+  if (!isLoggedIn) return null;
+
   return (
     <header className="bg-gray-900 fixed inset-x-0 top-0 z-50">
       <nav className="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
@@ -49,24 +52,18 @@ export const Header = ({ isLoggedIn, currentUser }) => {
             <a href="/buscar" className="text-sm font-semibold text-white hover:text-indigo-400">Ver contratos</a>
             <a href="/perfil" className="text-sm font-semibold text-white hover:text-indigo-400">👤 {currentUser?.email}</a>
           </div>
-        ) : (
-          <div className="hidden lg:flex lg:gap-x-12">
-            <a href="/login" className="text-sm font-semibold text-white hover:text-indigo-400">Log in →</a>
-          </div>
-        )}
+        ) : null}
 
         {/* Menú mobile */}
         {menuOpen && (
           <div className="lg:hidden bg-gray-900 px-6 pb-6">
-            {isLoggedIn ? (
+            {isLoggedIn && (
               <>
                 <a href="/inicio" className="block py-2 text-base font-semibold text-white hover:text-indigo-400">Inicio</a>
                 <a href="/contrato" className="block py-2 text-base font-semibold text-white hover:text-indigo-400">Ingresar</a>
                 <a href="/buscar" className="block py-2 text-base font-semibold text-white hover:text-indigo-400">Ver contratos</a>
                 <a href="/perfil" className="block py-2 text-base font-semibold text-white hover:text-indigo-400">👤 {currentUser?.email}</a>
               </>
-            ) : (
-              <a href="/login" className="block py-2 text-base font-semibold text-white hover:text-indigo-400">Log in</a>
             )}
           </div>
         )}

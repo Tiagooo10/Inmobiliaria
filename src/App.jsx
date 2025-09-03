@@ -10,6 +10,8 @@ import FormLogin from "./components/FormLogin";
 import Perfil from "./pages/Perfil";
 import { DIRECTUS_URL } from "./directus";
 import "./index.css";
+import CardsContrato from "./components/CardsContratos";
+import ContratosGuardados from "./pages/ContratosGuardados";
 
 // Componente para páginas protegidas
 function ProtectedPage({ currentUser, children }) {
@@ -75,7 +77,7 @@ export default function App() {
     <div className="min-h-screen flex flex-col">
       <Header isLoggedIn={!!currentUser} currentUser={currentUser} />
 
-      <main className="flex-1 pt-28 pb-28 bg-gray-900">
+      <main className="flex-1 bg-gray-900">
         <Routes>
           <Route
             path="/inicio"
@@ -121,7 +123,8 @@ export default function App() {
           />
         </Routes>
       </main>
-      <Footer />
+      <Footer currentUser={currentUser} />
+
     </div>
   );
 }

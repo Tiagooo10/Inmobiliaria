@@ -1,4 +1,6 @@
-export default function Footer() {
+export default function Footer({ currentUser })  {
+
+   if (!currentUser) return null;
   return (
     <footer className="bg-gray-900 text-gray-400">
       <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
