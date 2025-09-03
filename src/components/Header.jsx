@@ -1,23 +1,29 @@
 import { useState } from "react";
+export const DIRECTUS_URL = "https://directus-1-6hgt.onrender.com";
 
-export const Header = ({ isLoggedIn, currentUser }) => {
+export const Header = ({ isLoggedIn, currentUser, colorPrincipal = "#4f46e5", colorSecundario = "#818cf8" }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Si no está logueado, no mostramos nada
   if (!isLoggedIn) return null;
 
+  // URL del logo, si existe; si no, usar uno por defecto
+  const logoUrl = currentUser?.logoInmobiliaria
+  ? `${DIRECTUS_URL}/assets/${currentUser.logoInmobiliaria}`
+  : "https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500";
+
+
   return (
-    <header className="bg-gray-900 fixed inset-x-0 top-0 z-50">
-      <nav className="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
+    <header style={{ backgroundColor: colorPrincipal }} className="fixed inset-x-0 top-0 z-50">
+      <nav className="flex items-center justify-between p-4 lg:px-8" aria-label="Global">
         {/* Logo */}
         <div className="flex lg:flex-1">
           <a href="/" className="-m-1.5 p-1.5 flex items-center gap-2">
             <img
-              src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-              alt="Logo"
-              className="h-8 w-auto"
+              src={logoUrl}
+              alt="Logo Inmobiliaria"
+              className="h-12 w-12 rounded-md"
             />
-            <span className="text-white font-bold">Inmobiliaria App</span>
+            <span className="text-white font-bold">{currentUser?.nombreInmobiliaria || "Inmobiliaria App"}</span>
           </a>
         </div>
 
@@ -25,7 +31,7 @@ export const Header = ({ isLoggedIn, currentUser }) => {
         <div className="flex lg:hidden">
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="p-2.5 text-gray-200 rounded-md"
+            className="p-2.5 text-white rounded-md"
           >
             <span className="sr-only">Open main menu</span>
             <svg
@@ -45,24 +51,24 @@ export const Header = ({ isLoggedIn, currentUser }) => {
         </div>
 
         {/* Menú escritorio */}
-        {isLoggedIn ? (
+        {isLoggedIn && (
           <div className="hidden lg:flex lg:gap-x-12">
-            <a href="/inicio" className="text-sm font-semibold text-white hover:text-indigo-400">Inicio</a>
-            <a href="/contrato" className="text-sm font-semibold text-white hover:text-indigo-400">Ingresar</a>
-            <a href="/buscar" className="text-sm font-semibold text-white hover:text-indigo-400">Ver contratos</a>
-            <a href="/perfil" className="text-sm font-semibold text-white hover:text-indigo-400">👤 {currentUser?.email}</a>
+            <a href="/inicio" className="text-sm font-semibold text-white hover:text-gray-200">Inicio</a>
+            <a href="/contrato" className="text-sm font-semibold text-white hover:text-gray-200">Ingresar</a>
+            <a href="/buscar" className="text-sm font-semibold text-white hover:text-gray-200">Ver contratos</a>
+            <a href="/perfil" className="text-sm font-semibold text-white hover:text-gray-200">👤 {currentUser?.email}</a>
           </div>
-        ) : null}
+        )}
 
         {/* Menú mobile */}
         {menuOpen && (
-          <div className="lg:hidden bg-gray-900 px-6 pb-6">
+          <div className="lg:hidden px-6 pb-6" style={{ backgroundColor: colorPrincipal }}>
             {isLoggedIn && (
               <>
-                <a href="/inicio" className="block py-2 text-base font-semibold text-white hover:text-indigo-400">Inicio</a>
-                <a href="/contrato" className="block py-2 text-base font-semibold text-white hover:text-indigo-400">Ingresar</a>
-                <a href="/buscar" className="block py-2 text-base font-semibold text-white hover:text-indigo-400">Ver contratos</a>
-                <a href="/perfil" className="block py-2 text-base font-semibold text-white hover:text-indigo-400">👤 {currentUser?.email}</a>
+                <a href="/inicio" className="block py-2 text-base font-semibold text-white hover:text-gray-200">Inicio</a>
+                <a href="/contrato" className="block py-2 text-base font-semibold text-white hover:text-gray-200">Ingresar</a>
+                <a href="/buscar" className="block py-2 text-base font-semibold text-white hover:text-gray-200">Ver contratos</a>
+                <a href="/perfil" className="block py-2 text-base font-semibold text-white hover:text-gray-200">👤 {currentUser?.email}</a>
               </>
             )}
           </div>
@@ -71,6 +77,8 @@ export const Header = ({ isLoggedIn, currentUser }) => {
     </header>
   );
 };
+
+
 
 
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import CardsPrincipales from "./components/CardsPrincipales";
 import FormContrato from "./components/FormContrato";
 import Buscar from "./pages/Buscar";
@@ -8,10 +8,9 @@ import Footer from "./components/Footer";
 import FormRegister from "./components/FormRegister";
 import FormLogin from "./components/FormLogin";
 import Perfil from "./pages/Perfil";
+import FormCustomApp from "./components/FormCustomApp";
 import { DIRECTUS_URL } from "./directus";
 import "./index.css";
-import CardsContrato from "./components/CardsContratos";
-import ContratosGuardados from "./pages/ContratosGuardados";
 
 // Componente para páginas protegidas
 function ProtectedPage({ currentUser, children }) {
@@ -32,50 +31,114 @@ function ProtectedPage({ currentUser, children }) {
 }
 
 export default function App() {
-  const [contratos, setContratos] = useState(
-    JSON.parse(localStorage.getItem("contratos") || "[]")
-  );
-
   const [currentUser, setCurrentUser] = useState(
     JSON.parse(localStorage.getItem("currentUser") || "null")
   );
+  const [customizado, setCustomizado] = useState(false);
+  const [loadingUser, setLoadingUser] = useState(true);
 
-  // ⚡ Verificar usuario al cargar la app
+  // ⚡ Cargar usuario + branding al iniciar la app
   useEffect(() => {
-    if (!currentUser?.token) return;
+    async function fetchUser() {
+      if (!currentUser?.token) {
+        setLoadingUser(false);
+        return;
+      }
 
-    fetch(`${DIRECTUS_URL}/users/me`, {
-      headers: { Authorization: `Bearer ${currentUser.token}` },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Usuario no existe");
-        return res.json();
-      })
-      .catch(() => {
+      try {
+        // Traer info básica del usuario
+        const resUser = await fetch(`${DIRECTUS_URL}/users/me`, {
+          headers: { Authorization: `Bearer ${currentUser.token}` },
+        });
+        if (!resUser.ok) throw new Error("Usuario no existe");
+        const userData = await resUser.json();
+
+        let updatedUser = { ...currentUser, ...userData.data };
+
+        // Traer branding del usuario
+        const resBranding = await fetch(
+          `${DIRECTUS_URL}/items/Usuarios?filter[user_id][_eq]=${currentUser.id}`,
+          {
+            headers: { Authorization: `Bearer ${currentUser.token}` },
+          }
+        );
+
+        if (resBranding.ok) {
+          const brandingData = await resBranding.json();
+          if (brandingData.data?.length > 0) {
+            const branding = brandingData.data[0];
+            updatedUser = {
+              ...updatedUser,
+              nombreInmobiliaria: branding.nombreInmobiliaria,
+              logoInmobiliaria: branding.logoInmobiliaria,
+              colorPrincipal: branding.colorPrincipal,
+              colorSecundario: branding.colorSecundario,
+            };
+            setCustomizado(true);
+          } else {
+            // Si no hay branding, marcar como no customizado
+            setCustomizado(false);
+          }
+        }
+
+        setCurrentUser(updatedUser);
+        localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+      } catch (err) {
+        console.error(err);
         setCurrentUser(null);
         localStorage.removeItem("currentUser");
-      });
-  }, []);
+        setCustomizado(false);
+      } finally {
+        setLoadingUser(false);
+      }
+    }
 
-  const agregarContrato = (nuevo) => {
-    const nuevos = [...contratos, nuevo];
-    setContratos(nuevos);
-    localStorage.setItem("contratos", JSON.stringify(nuevos));
-  };
+    fetchUser();
+  }, []);
 
   const handleLogin = (user) => {
     setCurrentUser(user);
     localStorage.setItem("currentUser", JSON.stringify(user));
+    // Determinar si ya tiene branding
+    if (user.colorPrincipal && user.colorSecundario) {
+      setCustomizado(true);
+    } else {
+      setCustomizado(false);
+    }
   };
 
   const handleLogout = () => {
     setCurrentUser(null);
     localStorage.removeItem("currentUser");
+    // ⚡ No borrar la customización guardada en el usuario
   };
 
+  const handleBrandingSaved = (newBranding) => {
+    const updatedUser = { ...currentUser, ...newBranding };
+    setCurrentUser(updatedUser);
+    localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+    setCustomizado(true);
+  };
+
+  if (loadingUser) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
+        <h1>Cargando usuario...</h1>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header isLoggedIn={!!currentUser} currentUser={currentUser} />
+    <div className="min-h-screen flex flex-col bg-gray-900">
+      {/* Mostrar Header si está logueado y customizado */}
+      {currentUser && customizado && (
+        <Header
+          isLoggedIn={true}
+          currentUser={currentUser}
+          colorPrincipal={currentUser.colorPrincipal || "#4f46e5"}
+          colorSecundario={currentUser.colorSecundario || "#818cf8"}
+        />
+      )}
 
       <main className="flex-1 bg-gray-900">
         <Routes>
@@ -91,7 +154,7 @@ export default function App() {
             path="/contrato"
             element={
               <ProtectedPage currentUser={currentUser}>
-                <FormContrato onAgregar={agregarContrato} currentUser={currentUser} />
+                <FormContrato currentUser={currentUser} />
               </ProtectedPage>
             }
           />
@@ -107,10 +170,11 @@ export default function App() {
           <Route
             path="/login"
             element={
-              <FormLogin
-                currentUser={currentUser} // 🔹 PASAMOS EL CURRENTUSER
-                setCurrentUser={handleLogin}
-              />
+              currentUser ? (
+                <Navigate to={customizado ? "/inicio" : "/customizar"} replace />
+              ) : (
+                <FormLogin setCurrentUser={handleLogin} />
+              )
             }
           />
           <Route
@@ -121,13 +185,35 @@ export default function App() {
               </ProtectedPage>
             }
           />
+          <Route
+            path="/customizar"
+            element={
+              currentUser && !customizado ? (
+                <FormCustomApp
+                  currentUser={currentUser}
+                  onBrandingSaved={handleBrandingSaved}
+                />
+              ) : (
+                <Navigate to="/inicio" replace />
+              )
+            }
+          />
         </Routes>
       </main>
-      <Footer currentUser={currentUser} />
 
+      <Footer currentUser={currentUser} />
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
 
 
 

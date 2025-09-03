@@ -1,18 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DIRECTUS_URL } from "../directus";
 
-export default function FormLogin({ currentUser, setCurrentUser }) {
+export default function FormLogin({ setCurrentUser }) {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
-
-  // 🔹 Redirigir si ya está logueado
-  useEffect(() => {
-    if (currentUser) {
-      navigate("/inicio"); // redirige automáticamente al inicio
-    }
-  }, [currentUser, navigate]);
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -36,12 +29,14 @@ export default function FormLogin({ currentUser, setCurrentUser }) {
       }
 
       const token = data.data.access_token;
+
+      // Traer info completa del usuario
       const userRes = await fetch(`${DIRECTUS_URL}/users/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const userData = await userRes.json();
 
-      const user = {
+      let user = {
         token,
         id: userData.data.id,
         email: userData.data.email,
@@ -49,11 +44,34 @@ export default function FormLogin({ currentUser, setCurrentUser }) {
         lastName: userData.data.last_name || "No disponible",
       };
 
+      // Traer branding si existe
+      const resBranding = await fetch(
+        `${DIRECTUS_URL}/items/Usuarios?filter[user_id][_eq]=${user.id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (resBranding.ok) {
+        const brandingData = await resBranding.json();
+        if (brandingData.data?.length > 0) {
+          const branding = brandingData.data[0];
+          user = {
+            ...user,
+            nombreInmobiliaria: branding.nombreInmobiliaria,
+            logoInmobiliaria: branding.logoInmobiliaria,
+            colorPrincipal: branding.colorPrincipal,
+            colorSecundario: branding.colorSecundario,
+          };
+        }
+      }
+
+      // ⚡ Actualizar estado inmediatamente para mostrar Header sin refrescar
       setCurrentUser(user);
       localStorage.setItem("currentUser", JSON.stringify(user));
-      alert("Login exitoso");
 
-      navigate("/inicio"); // redirige a inicio después de login
+      // Redirigir según tenga branding o no
+      navigate(
+        user.colorPrincipal && user.colorSecundario ? "/inicio" : "/customizar",
+        { replace: true }
+      );
     } catch (err) {
       console.error(err);
       alert("❌ Error en login");
@@ -64,7 +82,6 @@ export default function FormLogin({ currentUser, setCurrentUser }) {
 
   return (
     <div className="flex min-h-screen">
-      {/* Lado formulario con padding */}
       <div className="w-1/2 flex items-center justify-center p-12">
         <form
           onSubmit={handleSubmit}
@@ -111,9 +128,7 @@ export default function FormLogin({ currentUser, setCurrentUser }) {
         </form>
       </div>
 
-      {/* Lado derecho: fondo negro con imagen y texto */}
       <div className="w-1/2 flex flex-col bg-black text-white min-h-screen">
-        {/* Imagen: ocupa 60% de la altura y centrada */}
         <div className="h-[60%] w-[50%] mx-auto flex items-center justify-center">
           <img
             src="/login-register.jpeg"
@@ -121,8 +136,6 @@ export default function FormLogin({ currentUser, setCurrentUser }) {
             className="h-full w-full object-contain"
           />
         </div>
-
-        {/* Texto: ocupa 30% de la altura, pegado a la imagen */}
         <div className="h-[30%] flex flex-col justify-start items-center px-8">
           <h2 className="text-3xl font-bold text-center">
             Bienvenido a tu Gestor de Contratos
@@ -135,6 +148,7 @@ export default function FormLogin({ currentUser, setCurrentUser }) {
     </div>
   );
 }
+
 
 
 

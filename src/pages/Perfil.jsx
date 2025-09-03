@@ -39,9 +39,7 @@ export default function Perfil({ currentUser, onLogout }) {
   return (
     <div className="max-w-lg mx-auto bg-gray-800 text-white p-8 rounded-2xl shadow-lg mt-20">
       <h1 className="text-3xl font-bold mb-6">Perfil de usuario</h1>
-      <p><strong>Email:</strong> {userData.email}</p>
-      <p><strong>Nombre:</strong> {userData.first_name || "No disponible"}</p>
-      <p><strong>Apellido:</strong> {userData.last_name || "No disponible"}</p>
+      <p><strong>Nombre:</strong> {currentUser?.nombreInmobiliaria || "Inmobiliaria App"}</p>
 
       <button
         onClick={onLogout}
